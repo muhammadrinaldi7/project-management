@@ -63,6 +63,28 @@ jobs:
       - name: Install Composer Dependencies
         run: composer install --no-dev --optimize-autoloader
 
+      # 3.5 Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22 # Sesuaikan dengan versi Node.js yang Anda gunakan
+
+      # 3.6 Cache NPM dependencies
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      # 3.7 Install Node dependencies
+      - name: Install Node dependencies
+        run: npm install
+
+      # 3.8 Build assets for production
+      - name: Build assets
+        run: npm run build
+
       # 4. Upload Laravel Core (Kecuali `public/`) ke root hosting
       - name: Upload Laravel Core to Hosting Root
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
